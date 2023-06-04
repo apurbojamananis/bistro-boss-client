@@ -8,8 +8,8 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
+import SocialLogin from "../SocialLogin/SocialLogin";
 const Login = () => {
-  // eslint-disable-next-line no-unused-vars
   const [disableBtn, setDisableBtn] = useState(true);
 
   const { signIn } = useContext(AuthContext);
@@ -79,7 +79,7 @@ const Login = () => {
                 <input
                   type="email"
                   name="email"
-                  placeholder="email"
+                  placeholder="Email"
                   className="input input-bordered"
                 />
               </div>
@@ -90,7 +90,7 @@ const Login = () => {
                 <input
                   type="password"
                   name="password"
-                  placeholder="password"
+                  placeholder="Password"
                   className="input input-bordered"
                 />
                 <label className="label">
@@ -118,8 +118,8 @@ const Login = () => {
                   type="submit"
                   className="btn btn-primary"
                   value="Login"
-                  // disabled={disableBtn}
-                  disabled={false}
+                  disabled={disableBtn}
+                  // disabled={false}
                 />
               </div>
             </form>
@@ -132,6 +132,9 @@ const Login = () => {
                   </Link>
                 </small>
               </p>
+            </div>
+            <div className="text-center my-5">
+              <SocialLogin></SocialLogin>
             </div>
           </div>
         </div>

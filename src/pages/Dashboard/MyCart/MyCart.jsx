@@ -1,14 +1,36 @@
 import { Helmet } from "react-helmet-async";
 import useCart from "../../../hooks/useCart";
 import { FaTrashAlt } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const MyCart = () => {
-  const [cart] = useCart();
+  const [cart, refetch] = useCart();
   const total = cart.reduce((sum, item) => item.price + sum, 0);
 
-  // const handleDelete = (item) => {
-
-  // };
+  const handleDelete = (item) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:5000/carts/${item._id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.deletedCount > 0) {
+              refetch();
+              Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            }
+          });
+      }
+    });
+  };
   return (
     <div className=" w-full px-5">
       <Helmet>
@@ -33,21 +55,21 @@ const MyCart = () => {
               </tr>
             </thead>
             <tbody>
-              {cart.map((row, index) => (
-                <tr key={row._id}>
+              {cart.map((item, index) => (
+                <tr key={item._id}>
                   <td>{index + 1}</td>
                   <td>
                     <div className="avatar">
                       <div className="mask mask-squircle w-12 h-12">
                         <img
-                          src={row.image}
+                          src={item.image}
                           alt="Avatar Tailwind CSS Component"
                         />
                       </div>
                     </div>
                   </td>
-                  <td>{row.name}</td>
-                  <td>${row.price}</td>
+                  <td>{item.name}</td>
+                  <td>${item.price}</td>
                   <td className="text-center">
                     <button
                       onClick={() => handleDelete(item)}

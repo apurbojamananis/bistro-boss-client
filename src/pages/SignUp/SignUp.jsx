@@ -16,23 +16,34 @@ const SignUp = () => {
   const { createUser, updateUserProfile } = useContext(AuthContext);
 
   const onSubmit = (data) => {
-    console.log(data);
     createUser(data.email, data.password)
       .then((result) => {
         const loggedUser = result.user;
         console.log(loggedUser);
         updateUserProfile(loggedUser, data.name, data.photoUrl)
           .then(() => {
-            Swal.fire({
-              position: "top-center",
-              icon: "success",
-              title: "User Created Sucessfully",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            console.log("Profile updated");
-            reset();
-            navigate("/login");
+            const saveUser = { name: data.name, email: data.email };
+            fetch("http://localhost:5000/users", {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+              },
+              body: JSON.stringify(saveUser),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.insertedId) {
+                  Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "User created successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  reset();
+                  navigate("/login");
+                }
+              });
           })
           .catch((error) => {
             console.log(error);
@@ -102,7 +113,7 @@ const SignUp = () => {
                   placeholder="email"
                   className="input input-bordered"
                 />
-                {errors.name && (
+                {errors.email && (
                   <span className="mt-2 text-red-500">Email is required</span>
                 )}
               </div>
